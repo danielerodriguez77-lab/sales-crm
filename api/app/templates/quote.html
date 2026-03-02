@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body { font-family: DejaVu Sans, Arial, sans-serif; font-size: 12px; color: #111; }
+      h1 { font-size: 20px; margin-bottom: 6px; }
+      .meta { margin-bottom: 16px; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { border: 1px solid #ddd; padding: 6px 8px; }
+      th { background: #f5f5f5; text-align: left; }
+      .totals { margin-top: 12px; width: 40%; float: right; }
+      .totals td { border: none; }
+    </style>
+  </head>
+  <body>
+    <h1>Cotización {{ quote.number }}</h1>
+    <div class="meta">
+      <div>Cliente: {{ customer_name }}</div>
+      <div>Válida hasta: {{ quote.valid_until or "-" }}</div>
+      <div>Versión: {{ quote.version }}</div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.price }}</td>
+          <td>{{ item.subtotal }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <table class="totals">
+      <tr>
+        <td>Subtotal</td>
+        <td>{{ quote.subtotal or 0 }}</td>
+      </tr>
+      <tr>
+        <td>Impuestos</td>
+        <td>{{ quote.tax or 0 }}</td>
+      </tr>
+      <tr>
+        <td>Descuento (%)</td>
+        <td>{{ quote.discount_percent or 0 }}</td>
+      </tr>
+      <tr>
+        <td>Total</td>
+        <td>{{ quote.total or 0 }}</td>
+      </tr>
+    </table>
+  </body>
+</html>

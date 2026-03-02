@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: sales-crm-api
+    env: python
+    rootDir: api
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://latitude-ventas.com,https://www.latitude-ventas.com,https://app.latitude-ventas.com
+      - key: DISCOUNT_THRESHOLD_PERCENT
+        value: "10"
+      - key: SLA_FIRST_CONTACT_HOURS
+        value: "2"
+      - key: STALE_OPPORTUNITY_DAYS
+        value: "7"
+      - key: PAYMENT_REMINDER_DAYS_BEFORE
+        value: "3"

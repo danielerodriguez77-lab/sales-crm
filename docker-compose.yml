@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: crm
+      POSTGRES_PASSWORD: crm
+      POSTGRES_DB: crm
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./api
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: postgresql+psycopg2://crm:crm@db:5432/crm
+      JWT_SECRET: change_me
+      JWT_REFRESH_SECRET: change_me_refresh
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      DISCOUNT_THRESHOLD_PERCENT: 10
+      SLA_FIRST_CONTACT_HOURS: 2
+      STALE_OPPORTUNITY_DAYS: 7
+      PAYMENT_REMINDER_DAYS_BEFORE: 3
+      CORS_ORIGINS: http://localhost:5173
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./api:/app
+
+  web:
+    build:
+      context: ./web
+    environment:
+      VITE_API_URL: http://localhost:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+    command: ["sh", "-c", "npm install && npm run dev -- --host 0.0.0.0"]
+    volumes:
+      - ./web:/app
+
+volumes:
+  db_data:

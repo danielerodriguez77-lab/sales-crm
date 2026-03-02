@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r api/requirements.txt
+      - name: Lint
+        run: |
+          ruff api/app
+          black --check api/app
+      - name: Tests
+        env:
+          PYTHONPATH: api
+        run: pytest api/tests
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install
+        run: |
+          cd web
+          npm install
+      - name: Lint
+        run: |
+          cd web
+          npm run lint
+      - name: Build
+        run: |
+          cd web
+          npm run build
